@@ -1,0 +1,171 @@
+openapi: 3.0.1
+info:
+  title: Получение информации о клиентах
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /clients:
+    get:
+      summary: Метод получения списка клиентов
+      tags: 
+        - Clients
+      operationId: getAllClients
+      responses:
+        "200":
+          description: Успешный ответ со спиcком клиентов
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Clients"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Метод добавления нового клиента в список
+      tags: 
+        - Clients
+      operationId: createClient
+      requestBody:
+        required: true
+        content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Client" 
+      responses:
+        "200":
+          description: Усшный ответ добавления нового клиента
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /clients/{idClient}:
+    get:
+      summary: Метод получения клиента по id
+      tags:
+        - Clients
+      operationId: getClientId
+      parameters:
+        - name: idClient
+          in: path
+          required: true
+          description: id Client
+          schema:
+            type: string
+        - name: includeCloud
+          in: query
+          required: false
+          description: Включить инфо об облаке
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Успешный ответ получения клиента по id
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"     
+    delete:
+      summary: Удаление клиента по id
+      tags:
+        - Clients
+      operationId: deleteClientById
+      parameters:
+        - name: idClient
+          in: path
+          required: true
+          description: id Client
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Успешное удаление клиента по id
+          content:
+            adplication/json: {}
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error" 
+components:
+  schemas:
+    Client:
+      type: object
+      required:
+        - idClient
+        - name
+        - cloud
+      properties:
+        idClient:
+          type: integer 
+          example: 1
+          description: Id клиента
+        name:
+          type: string
+          example: Кирилл
+          description: Имя клиента
+        cloud:
+          $ref: "#/components/schemas/Cloud"
+    Clients:
+      type: array
+      items:
+        $ref: "#/components/schemas/Client"
+    Error:
+      type: object
+      required:
+        - codeError
+        - messageError
+      properties:
+        codeError:
+          type: string
+          example: 123f456
+          description: Код ошибки
+        messageError:
+          type: string
+          example: error
+          description: Сообщение ошибки
+    Cloud:
+      type: object
+      required:
+        - OS
+        - RAM
+        - CPU
+        - SSD
+        - idClient
+      properties:
+        OS:
+          type: string
+          enum:
+            - Windows
+            - Linux
+        RAM:
+          type: integer
+          example: 256
+          description: Количество оперативной памяти
+        CPU:
+          type: integer
+          example: 8
+          description: Количество ядер процессора 
+        SSD:
+          type: integer
+          example: 1024
+          description: Количество ssd памяти
+        idClient:
+          type: integer
+          example: 1
