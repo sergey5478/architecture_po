@@ -1,0 +1,190 @@
+openapi: 3.0.1
+servers: 
+  - url: http://localhost:8080/api/v1/
+    description: Dev server
+info:
+  title: Робот-пылесос
+  version: 0.0.1
+paths:
+  /users:
+    get:
+      summary: Метод получения списка пользователей
+      tags: 
+        - Users
+      operationId: getAllUsers
+      responses: 
+        "200":
+          description: Успешный ответ со списком пользователей
+          content: 
+            adplication/json: 
+              schema: 
+                $ref: "#/components/schemas/User"
+        "default":
+          description: Все остальное
+          content: 
+            adplication/json:
+              schema: 
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Метод добавления нового пользователя в список
+      tags: 
+        - Users
+      operationId: createUsers
+      requestBody:
+        required: true
+        content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Users" 
+      responses:
+        "200":
+          description: Усшный ответ добавления нового пользователя
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{idUser}:
+    get:
+      summary: Метод получения пользователя по id
+      tags:
+        - Users
+      operationId: getUsers
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          description: id User
+          schema:
+            type: string
+        - name: includeCloud
+          in: query
+          required: false
+          description: Включить инфо об облаке
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Успешный ответ получения пользователя по id
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/hash/{hash}:
+    get:
+      summary: Метод получения пользователя по хэшу
+      tags:
+        - Users
+      operationId: getUserByHash
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: Хэш пользователя
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Успешный ответ получения пользователя по хэшу
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "default":
+          description: Всё остальное
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Robot:
+      type: object
+      required:
+        - id
+        - model
+        - version
+        - status
+        - resourse
+        - fabricNumber
+        - ipAdress
+        - idGroup
+      properties:
+        id:
+          type: integer
+          example: 1
+        model:
+          type: string
+          example: abc123
+        version:
+          type: string
+          example: abc123
+        status:
+          type: string
+          example: worked
+        resourse:
+          type: integer
+          example: 75
+        fabricNumber:
+          type: string
+          example: 123f456
+        ipAdress:
+          type: string
+          example: 192.168.2.5
+        idGroup:
+          type: integer
+          example: 1
+    Robots:
+      type: array
+      items:
+        $ref: "#/components/schemas/Robot"
+    User:
+      type: object
+      required:
+        - id
+        - login
+        - hashPassword
+        - email
+        - hash
+      properties:
+        id:
+          type: integer
+          example: 1
+        login:
+          type: string
+          example: login
+        hashPassword:
+          type: string
+          example: 123456
+        email:
+          type: string
+          example: example@test.ru
+        hash:
+          type: string
+          example: abcd1234
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+    Error:
+      type: object
+      required: 
+        - codeError
+        - messageError
+      properties: 
+        codeError:
+          type: integer
+          example: 12
+        messageError:
+          type: string
